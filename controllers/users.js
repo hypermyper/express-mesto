@@ -2,7 +2,7 @@ const User = require('../models/user');
 
 const getUsers = (req, res) => User.find({})
   .then((users) => res.status(200).send(users))
-  .catch(() => res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }));
+  .catch(() => res.status(400).send({ message: 'Неправильно введены данные' }));
 
 const getProfile = (req, res) => User.findById(req.params._id)
   .orFail(() => {
@@ -11,7 +11,7 @@ const getProfile = (req, res) => User.findById(req.params._id)
     throw err;
   })
   .then((user) => res.status(200).send(user))
-  .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
+  .catch(() => res.status(400).send({ message: 'Неправильно введены данные' }));
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
@@ -37,7 +37,7 @@ const patchProfile = (req, res) => {
       throw err;
     })
     .then((user) => res.status(200).send(user))
-    .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
+    .catch(() => res.status(400).send({ message: 'Неправильно введены данные' }));
 };
 
 // update profile avatar, use userId from app.js
@@ -57,7 +57,7 @@ const patchAvatar = (req, res) => {
       throw err;
     })
     .then((user) => res.status(200).send(user))
-    .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
+    .catch(() => res.status(400).send({ message: 'Неправильно введены данные' }));
 };
 
 module.exports = {
