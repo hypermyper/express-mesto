@@ -5,13 +5,17 @@ const getUsers = (req, res) => User.find({})
   .catch(() => res.status(400).send({ message: 'Неправильно введены данные' }));
 
 const getProfile = (req, res) => User.findById(req.params._id)
-  .orFail(() => {
-    const err = new Error('Пользователь не найден');
-    err.statusCode(404);
-    throw err;
-  })
+  .orFail(new Error('IdError'))
   .then((user) => res.status(200).send(user))
-  .catch(() => res.status(400).send({ message: 'Неправильно введены данные' }));
+  .catch((err) => {
+    if (err.message === 'IdError') {
+      res.status(404).send({ message: 'Такого пользователя в базе нет' });
+    } else if (err.kind === 'ObjectId') {
+      res.status(400).send({ message: 'Неправильно введены данные' });
+    } else {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
+    }
+  });
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
